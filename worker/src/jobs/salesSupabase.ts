@@ -47,10 +47,9 @@ type ItemRow = {
 };
 
 // Classificação do movimento. Três destinos: VENDA, DEVOLUÇÃO ou DESCARTAR (transferência/remessa).
-// REGRA REAL DO ERP (decifrada 02/07/2026 no MySQL VaiXora*.movimento, ver [[pendencia-qtd-vendas-tela]]):
-// o "Qtd de Vendas" do Consulta Vendas Geral = notas com Venda='S' e Devolucao='N', MENOS as
-// devoluções (Devolucao='S'). Provado exato: Matriz Jun 1641−79=1562, Mai 1870−122=1748, Av.Potir
-// 01-25/06 = 925. As linhas Venda='N',Devolucao='N' são TRANSFERÊNCIAS/remessas internas e o ERP
+// Regra do ERP: Devolucao='S' é devolução; o restante não cancelado é venda. Valor = TotalNota.
+// A quantidade de vendas do ERP conta notas com Venda='S' e Devolucao='N', menos as
+// devoluções. As linhas Venda='N' e Devolucao='N' são transferências internas e o ERP
 // NÃO as conta — nem com NF nem sem NF. O critério é a coluna `Venda`, não "NomeVendedor LIKE
 // TRANSFER" (marcador que só acertava por acaso). O feed n8n passou a preencher `Venda` em 02/07.
 //
@@ -75,7 +74,7 @@ function classificar(r: MovRow): TipoDoc {
  * TRANSFERÊNCIA entre lojas SEM nota fiscal (NumeroNF=0) — usado APENAS no fallback, quando a
  * coluna `Venda` do feed vem nula (histórico antigo). Com `Venda` preenchida, a classificação é
  * feita direto por Venda='S' (ver classificar). Mantido para não regredir o passado ainda não
- * reprocessado pelo n8n. Ver memória [[divergencia-fumis-feed-itens]] e [[pendencia-qtd-vendas-tela]].
+ * reprocessado. Com `Venda` preenchida, a classificação não usa o nome do vendedor.
  */
 function isTransferenciaSemNF(r: MovRow): boolean {
   const ehTransfer = (r.NomeVendedor ?? '').toUpperCase().includes('TRANSFER');
@@ -398,8 +397,8 @@ export async function syncSalesSupabase(syncDays = config.salesSyncDays): Promis
     // ---------- 3) Gravar fatos (UPSERT por janela: preserva histórico < desde) ----------
     // fact_vendas_dia: os VALORES (faturamento/devolução) vêm da view por DataMovimento — casam
     // com o "Venda R$" do ERP. Mas a CONTAGEM (qtd_vendas/qtd_devolucoes) segue a nossa
-    // agregação por DataEmissao, que reproduz o "Qtd de Vendas" do ERP (Matriz Jun: 1562, vs
-    // 1641 da view). As duas datas caem em dias diferentes; como a coerência exigida é a do
+    // agregação por DataEmissao, que reproduz a quantidade de vendas do ERP. As duas datas
+    // caem em dias diferentes; como a coerência exigida é a do
     // CARD (total do período), fazemos o MERGE por dia — o SUM mensal de cada métrica bate com
     // sua fonte-ERP. Sem view (filial não coberta), tudo vem da agregação própria.
     const viewDia = porDiaView.get(f.nome);

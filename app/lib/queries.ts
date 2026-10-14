@@ -46,7 +46,7 @@ function filialClause(f: Filtros, startIdx: number, col = 'filial'): [string, un
  * parâmetros → não interfere na numeração de $N. `alias` é a tabela base à qual o join se liga.
  *
  * DECISÃO (08/07/2026): a transferência entre lojas NÃO é venda ao cliente final e foi
- * REMOVIDA do "Valor vendido" e dos demais KPIs de venda (a pedido do Gabriel). Os KPIs
+ * REMOVIDA do "Valor vendido" e dos demais KPIs de venda. Os KPIs
  * subtraem t_liq/t_bruto/t_qtd deste join e destacam a transferência num card próprio.
  * (Isso reverte a decisão de 29/06 de INCLUIR a transferência p/ casar com o ERP; agora o
  * "Valor vendido" reflete venda ao cliente, então NÃO bate mais com a coluna "Venda R$" do ERP,
