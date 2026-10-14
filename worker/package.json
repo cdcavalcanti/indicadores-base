@@ -1,0 +1,31 @@
+{
+  "name": "vortex-insights-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "migrate": "tsx src/migrate.ts",
+    "start": "tsx src/index.ts",
+    "sync:sales": "tsx src/cli.ts sales",
+    "sync:instagram": "tsx src/cli.ts instagram",
+    "ig-insights": "tsx src/cli.ts ig-insights",
+    "ig-images": "tsx src/cli.ts ig-images",
+    "ig-account": "tsx src/cli.ts ig-account",
+    "sync:meta": "tsx src/cli.ts meta",
+    "sync:google": "tsx src/cli.ts google",
+    "sync:cobranca": "tsx src/cli.ts cobranca",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "node-cron": "^3.0.3",
+    "pg": "^8.13.1",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/node-cron": "^3.0.11",
+    "@types/pg": "^8.11.10",
+    "typescript": "^5.7.2"
+  }
+}

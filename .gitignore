@@ -1,0 +1,36 @@
+# deps
+node_modules/
+**/node_modules/
+
+# next
+app/.next/
+app/out/
+.next/
+
+# build
+worker/dist/
+dist/
+*.tsbuildinfo
+
+# env / secrets (NUNCA versionar)
+.env
+.env.local
+.env.*.local
+
+# dados brutos / exports do n8n (contêm segredos)
+docs/
+
+# logs
+*.log
+npm-debug.log*
+
+# os
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# claude code (config local da máquina)
+.claude/settings.local.json
